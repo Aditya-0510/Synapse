@@ -7,7 +7,6 @@ import ShareIcon from '../icons/ShareIcon'
 import { useEffect, useState } from 'react'
 import { useContent } from '../hooks/useContent'
 import axios from 'axios'
-// import { Plus, Share } from "lucide-react";
 
 const Dashboard = () => {
 
