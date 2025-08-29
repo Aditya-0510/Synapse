@@ -26,10 +26,6 @@ function StartIcon({ type }: { type: string }) {
 async function DeleteContent(title){
     const response = await axios.delete("http://localhost:3000/api/v1/content/",{
         title
-    },{
-        headers:{
-            "Authorization": localStorage.getItem("token");
-        }
     })
 }
 
