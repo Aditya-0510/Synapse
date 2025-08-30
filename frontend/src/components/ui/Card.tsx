@@ -11,7 +11,8 @@ interface CardProps{
     type: "twitter" | "youtube" | "notion"
     title: string
     link: string
-    onDelete?: (title: string) => void 
+    onDelete?: (title: string) => void
+    readOnly?: boolean  
 }
 
 function StartIcon({ type }: { type: string }) {
@@ -55,6 +56,7 @@ export function Card( props: CardProps){
     }, [props.type, props.link]);
 
     const deleteContent = async () => {
+        if (props.readOnly) return;
         if (!confirm(`Are you sure you want to delete "${props.title}"?`)) {
             return;
         }
@@ -117,21 +119,23 @@ export function Card( props: CardProps){
                                 className="text-gray-500 group-hover:text-blue-600 cursor-pointer"
                             />
                         </button>
-                        <button
-                            onClick={deleteContent}
-                            className="p-2 hover:bg-red-50 rounded-full transition-colors duration-200 group"
-                            title="Delete content"
-                            disabled={isDeleting}
-                        >
-                            <DeleteIcon 
-                                size="md" 
-                                className={`cursor-pointer transition-colors duration-200 ${
-                                    isDeleting 
-                                        ? 'text-gray-400 animate-pulse' 
-                                        : 'text-gray-500 group-hover:text-red-600'
-                                }`}
-                            />
-                        </button>
+                        {!props.readOnly && (
+                            <button
+                                onClick={deleteContent}
+                                className="p-2 hover:bg-red-50 rounded-full transition-colors duration-200 group"
+                                title="Delete content"
+                                disabled={isDeleting}
+                            >
+                                <DeleteIcon 
+                                    size="md" 
+                                    className={`cursor-pointer transition-colors duration-200 ${
+                                        isDeleting 
+                                            ? 'text-gray-400 animate-pulse' 
+                                            : 'text-gray-500 group-hover:text-red-600'
+                                    }`}
+                                />
+                            </button>
+                        )}
                     </div>
                 </div>
 
