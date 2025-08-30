@@ -295,7 +295,7 @@ export function Card( props: CardProps){
                             
                             <div className={twitterLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'}>
                                 <blockquote className='twitter-tweet'>
-                                    <a href={props.link.replace("x","twitter")}></a>
+                                    <a href={props.link.replace("x","twitter")} title='tweet embed'></a>
                                 </blockquote>
                             </div>
                         </div>
@@ -305,7 +305,7 @@ export function Card( props: CardProps){
                         <iframe className='w-full' src={props.link.replace("watch","embed").replace("?v=","/")} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
                     }
                     {props.type === "notion" &&
-                        <iframe className='w-full' src={props.link} width="100%" height="600" frameBorder="0" allowFullScreen />
+                        <iframe className='w-full' src={props.link} width="100%" height="600" frameBorder="0" allowFullScreen title='notion embed'/>
                     }
                  </div>
                  <div className="mt-4 pt-3 border-t border-gray-100">

@@ -37,6 +37,7 @@ const ShareDropdown = ({ url, onClose }: ShareDropdownProps) => {
           <button
             onClick={onClose}
             className="p-1 hover:bg-slate-300 rounded-full transition-colors cursor-pointer"
+            title={"menu"}
           >
             <svg
               className="w-4 h-4 text-gray-500"
