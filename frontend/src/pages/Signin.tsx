@@ -20,10 +20,18 @@ export function Signin() {
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function signin() {
     const email = emailRef.current?.value;
     const password = passwordRef.current?.value;
+
+    setError(null);
+
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -35,17 +43,19 @@ export function Signin() {
         }
       );
 
-      console.log("Full response:", response.data);
+      const success = response.data.success;
+      if(!success){
+        setError("Invalid credentials. Please check your email and password.");
+        return;
+      }
       const token = response.data.token;
-      console.log("Extracted token:", token);
 
       localStorage.setItem("token", token);
       navigate("/dashboard");
-      alert("You have signed in");
     } 
     catch (e) {
       console.error("Signin failed:", e);
-      alert("Error signing in. Please try again.");
+      setError("Invalid email or password. Please try again.");
     } 
     finally {
       setLoading(false);
@@ -109,6 +119,17 @@ export function Signin() {
                   Forgot password?
                 </button>
               </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-red-700 text-sm">{error}</span>
+                  </div>
+                </div>
+              )}
 
               <Button
                 text="Sign In"

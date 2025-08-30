@@ -24,17 +24,28 @@ export function Modal({ open, onClose }: ModalProps) {
     const tagsRef = useRef<HTMLInputElement>(null);
 
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
     async function addContent() {
+        setError(null);
+        setSuccess(null);
+
         const title = titleRef.current?.value;
         const link = linkRef.current?.value;
         const tagsInput = tagsRef.current?.value;
 
         if (!title || !link) {
-            alert("Please fill in both title and link");
+            setError("Please fill in both title and link");
             return;
         }
-
+        try {
+            new URL(link);
+        } 
+        catch (e) {
+            setError("Please enter a valid URL");
+            return;
+        }
         const tags = tagsInput ? tagsInput.split(",").map(t => t.trim()) : [];
 
         try {
@@ -52,35 +63,44 @@ export function Modal({ open, onClose }: ModalProps) {
 
             console.log("Response:", response.data);
             if (response.data.success) {
-                alert("Content added successfully!");
+               setSuccess("Content added successfully!");
                 
                 if (titleRef.current) titleRef.current.value = "";
                 if (linkRef.current) linkRef.current.value = "";
                 if (tagsRef.current) tagsRef.current.value = "";
 
-                onClose();
-            } else {
-                alert(response.data.message);
+                setTimeout(() => {
+                    onClose();
+                    setSuccess(null); 
+                }, 1000);
+            } 
+            else {
+                 setError(response.data.message || "Failed to add content");
             }
         } 
         catch (err: any) {
-            console.error("Error while adding content:", err.response?.data || err.message);
-            alert("Error adding content: " + (err.response?.data?.message || err.message));
+            setError(err.response?.data?.message || "Error adding content. Please try again.");
         }
         finally {
             setLoading(false);
         }
     }
+
+    const handleClose = () => {
+        setError(null);
+        setSuccess(null);
+        onClose();
+    };
     //closing modal by clicking on outside
     const handleBackdropClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
-            onClose();
+            handleClose()
         }
     };
     //closing modal by pressing esc key
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Escape') {
-            onClose();
+            handleClose()
         }
     };
 
@@ -107,6 +127,27 @@ export function Modal({ open, onClose }: ModalProps) {
                 </div>
 
                 <div className="p-6 space-y-6">
+                    {error && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <div className="flex items-center">
+                                <svg className="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="text-red-700 text-sm">{error}</span>
+                            </div>
+                        </div>
+                    )}
+                    {success && (
+                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center">
+                                <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span className="text-green-700 text-sm">{success}</span>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">

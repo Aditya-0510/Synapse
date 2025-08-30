@@ -8,6 +8,73 @@ import { useEffect, useState, useRef } from "react";
 import { useContent } from "../hooks/useContent";
 import axios from "axios";
 import ShareDropdown from "../components/ShareDropdown";
+import { useNavigate } from "react-router-dom";
+
+interface ConfirmDialogProps {
+  isOpen: boolean
+  onConfirm: () => void
+  onCancel: () => void
+}
+
+function LogoutConfirmDialog({ isOpen, onConfirm, onCancel }: ConfirmDialogProps) {
+  if (!isOpen) return null
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onCancel()
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onCancel()
+    }
+  }
+
+  return (
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/50 animate-in fade-in duration-200"
+      onClick={handleBackdropClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={-1}
+    >
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-auto animate-in slide-in-from-bottom-4 duration-300 transform-gpu">
+        <div className="p-6">
+          <div className="flex items-center mb-4">
+            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-orange-100">
+              <svg className="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </div>
+          </div>
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Sign Out</h3>
+            <p className="text-sm text-gray-600">
+              Are you sure you want to sign out? You'll need to sign in again to access your content.
+            </p>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-end gap-3 p-6 border-t border-slate-200 bg-gray-50 rounded-b-2xl">
+          <button
+            type="button"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 cursor-pointer"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200 cursor-pointer"
+            onClick={onConfirm}
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const Dashboard = () => {
   const [modal, setModal] = useState(false);
@@ -17,6 +84,9 @@ const Dashboard = () => {
   const [isSharing, setIsSharing] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     refresh();
@@ -96,17 +166,29 @@ const Dashboard = () => {
       const url = `${frontendUrl}/share/${response.data.hash}`;
       setShareUrl(url);
       setShareDropdown(true);
-    } 
-    catch (error) {
+    } catch (error) {
       console.error("Error sharing brain:", error);
       alert("Failed to generate share link. Please try again.");
-    } 
-    finally {
+    } finally {
       setIsSharing(false);
     }
   }
 
+ const handleLogoutClick = () => {
+    setShowLogoutDialog(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    localStorage.removeItem("token");
+    navigate("/signin");
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutDialog(false);
+  };
+
   return (
+    <>
     <div>
       <Sidebar
         activeFilter={activeFilter}
@@ -151,12 +233,32 @@ const Dashboard = () => {
               />
 
               {shareDropdown && shareUrl && (
-                <ShareDropdown 
-                  url={shareUrl} 
-                  onClose={() => setShareDropdown(false)} 
+                <ShareDropdown
+                  url={shareUrl}
+                  onClose={() => setShareDropdown(false)}
                 />
               )}
             </div>
+            <button
+              onClick={handleLogoutClick}
+              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 hover:text-red-700 border border-red-200 hover:border-red-300 rounded-lg transition-all duration-200 font-medium cursor-pointer"
+              title="Sign Out"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              <span className="text-sm">Sign Out</span>
+            </button>
           </div>
         </div>
 
@@ -171,6 +273,12 @@ const Dashboard = () => {
         )}
       </div>
     </div>
+    <LogoutConfirmDialog
+        isOpen={showLogoutDialog}
+        onConfirm={handleLogoutConfirm}
+        onCancel={handleLogoutCancel}
+      />
+    </>
   );
 };
 

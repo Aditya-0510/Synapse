@@ -21,25 +21,55 @@ export function Signup() {
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   async function signup() {
+    setError(null);
+    setSuccess(null);
+    
+    const name = nameRef.current?.value;
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+    
+    if (!name || !email || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
     setLoading(true);
     try {
-      const name = nameRef.current?.value;
-      const email = emailRef.current?.value;
-      const password = passwordRef.current?.value;
-
-      await axios.post(`${backendUrl}/user/signup`, {
+    
+      const response = await axios.post(`${backendUrl}/user/signup`, {
         name,
         email,
         password,
       });
-      navigate("/signin");
-      alert("You have signed up");
+
+      const success = response.data.success;
+      if(!success){
+        setError("Failed to create account. Please try again.");
+        return;
+      }
+      setSuccess("Account created successfully! Redirecting to sign in...");
+      
+      setTimeout(() => {
+        navigate("/signin");
+      }, 2000);
     } 
     catch (e) {
         console.error("Signup failed:", e);
-        alert("Error signing up. Please try again.");
+        if (e.response?.status === 409) {
+        setError("An account with this email already exists. Please sign in instead.");
+        }
+        else
+        setError("Failed to create account. Please try again.");
     } 
     finally {
       setLoading(false);
@@ -140,6 +170,28 @@ export function Signup() {
                   {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </div>
+
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-red-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-red-700 text-sm">{error}</span>
+                  </div>
+                </div>
+              )}
+
+              {success && (
+                <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center">
+                    <svg className="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="text-green-700 text-sm">{success}</span>
+                  </div>
+                </div>
+              )}
 
               <Button
                 text="Create Account"

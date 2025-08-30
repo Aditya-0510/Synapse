@@ -36,7 +36,7 @@ const ShareDropdown = ({ url, onClose }: ShareDropdownProps) => {
           </h3>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-slate-300 rounded-full transition-colors"
+            className="p-1 hover:bg-slate-300 rounded-full transition-colors cursor-pointer"
           >
             <svg
               className="w-4 h-4 text-gray-500"
@@ -86,11 +86,10 @@ const ShareDropdown = ({ url, onClose }: ShareDropdownProps) => {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex gap-2">
           <button
             onClick={copyToClipboard}
-            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 cursor-pointer ${
               copySuccess
                 ? "bg-green-50 text-green-700 border border-green-200"
                 : "bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
@@ -135,7 +134,7 @@ const ShareDropdown = ({ url, onClose }: ShareDropdownProps) => {
 
           <button
             onClick={openInNewTab}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-50 text-gray-700 border border-slate-300 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200"
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-50 text-gray-700 border border-slate-300 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
           >
             <svg
               className="w-4 h-4"
@@ -152,11 +151,6 @@ const ShareDropdown = ({ url, onClose }: ShareDropdownProps) => {
             </svg>
             Open Link
           </button>
-        </div>
-
-        {/* Footer Info */}
-        <div className="text-xs text-gray-500 text-center pt-2 border-t border-gray-100">
-          This link will remain active until you disable sharing
         </div>
       </div>
     </div>
