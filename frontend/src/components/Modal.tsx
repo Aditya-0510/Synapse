@@ -16,6 +16,8 @@ interface ModalProps {
 }
 
 export function Modal({ open, onClose }: ModalProps) {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     const titleRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
     const [type, setType] = useState(contentType.Youtube);
@@ -37,7 +39,7 @@ export function Modal({ open, onClose }: ModalProps) {
 
         try {
             setLoading(true);
-            const response = await axios.post("http://localhost:3000/api/v1/content/", {
+            const response = await axios.post(`${backendUrl}/content/`, {
                 link,
                 type,
                 title,

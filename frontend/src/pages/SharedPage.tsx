@@ -17,6 +17,8 @@ interface SharedData {
 }
 
 const SharedPage = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const { shareId } = useParams()
   const [sharedData, setSharedData] = useState<SharedData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -32,7 +34,7 @@ const SharedPage = () => {
 
       try {
         setLoading(true)
-        const response = await axios.get(`http://localhost:3000/api/v1/brain/${shareId}`)
+        const response = await axios.get(`${backendUrl}/brain/${shareId}`)
         
         if (response.data.name && response.data.content) {
           setSharedData(response.data)
@@ -78,7 +80,7 @@ const SharedPage = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Content Not Found</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => window.location.href = '/'}
+            onClick={() => window.location.href = '/dashboard'}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Go to Home

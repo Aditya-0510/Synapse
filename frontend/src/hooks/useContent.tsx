@@ -2,9 +2,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 export function useContent(){
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     const [contents, setContents] = useState([]);
     function refresh(){
-        axios.get("http://localhost:3000/api/v1/content/",{
+        axios.get(`${backendUrl}/content/`,{
             headers: {
                 "Authorization" : localStorage.getItem("token")
             }

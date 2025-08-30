@@ -71,6 +71,9 @@ const Dashboard = () => {
   };
 
   async function shareBrain() {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
+
     if (shareUrl && !isSharing) {
       setShareDropdown(!shareDropdown);
       return;
@@ -79,7 +82,7 @@ const Dashboard = () => {
     try {
       setIsSharing(true);
       const response = await axios.post(
-        "http://localhost:3000/api/v1/brain/share",
+        `${backendUrl}/brain/share`,
         {
           share: true,
         },
@@ -90,7 +93,7 @@ const Dashboard = () => {
         }
       );
 
-      const url = `http://localhost:5173/share/${response.data.hash}`;
+      const url = `${frontendUrl}/share/${response.data.hash}`;
       setShareUrl(url);
       setShareDropdown(true);
     } 

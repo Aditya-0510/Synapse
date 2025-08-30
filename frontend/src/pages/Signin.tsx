@@ -11,6 +11,8 @@ import {
 } from "../icons/InputIcons";
 
 export function Signin() {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   const navigate = useNavigate();
 
   const emailRef = useRef<HTMLInputElement>(null);
@@ -26,7 +28,7 @@ export function Signin() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/api/v1/user/signin",
+        `${backendUrl}/user/signin`,
         {
           email,
           password,

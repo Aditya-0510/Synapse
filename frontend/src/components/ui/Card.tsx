@@ -26,6 +26,8 @@ function StartIcon({ type }: { type: string }) {
 }
 
 export function Card( props: CardProps){
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     const [isDeleting, setIsDeleting] = useState(false);
     const [twitterLoading, setTwitterLoading] = useState(true);
 
@@ -63,7 +65,7 @@ export function Card( props: CardProps){
 
         try {
             setIsDeleting(true);
-            const response = await axios.delete("http://localhost:3000/api/v1/content/", {
+            const response = await axios.delete(`${backendUrl}/content/`, {
                 data: { 
                     title: props.title
                 },

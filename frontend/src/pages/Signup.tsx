@@ -13,6 +13,7 @@ import {
 
 export function Signup() {
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -28,7 +29,7 @@ export function Signup() {
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value;
 
-      await axios.post("http://localhost:3000/api/v1/user/signup", {
+      await axios.post(`${backendUrl}/user/signup`, {
         name,
         email,
         password,
