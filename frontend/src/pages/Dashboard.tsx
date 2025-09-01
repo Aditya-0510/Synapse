@@ -266,8 +266,8 @@ const Dashboard = () => {
           <div className="text-center py-16"></div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredContents.map(({ type, link, title }) => (
-              <Card key={link} type={type} link={link} title={title} />
+            {filteredContents.map(({ type, link, title, tags}) => (
+              <Card key={link} type={type} link={link} title={title} tags={tags} />
             ))}
           </div>
         )}

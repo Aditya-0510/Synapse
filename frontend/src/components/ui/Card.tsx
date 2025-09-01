@@ -6,11 +6,17 @@ import YoutubeIcon from '../../icons/YoutubeIcon'
 import TwitterIcon from '../../icons/TwitterIcon'
 import axios from 'axios'
 
+interface Tag {
+    _id: string
+    title: string
+}
+
 interface CardProps{
     className?: string
     type: "twitter" | "youtube" | "notion"
     title: string
     link: string
+    tags?: Tag[]
     onDelete?: (title: string) => void
     readOnly?: boolean  
 }
@@ -308,10 +314,28 @@ export function Card( props: CardProps){
                         <iframe className='w-full' src={props.link} width="100%" height="600" frameBorder="0" allowFullScreen title='notion embed'/>
                     }
                  </div>
+                 
                  <div className="mt-4 pt-3 border-t border-gray-100">
-                    <p className="text-xs text-gray-500 truncate" title={props.link}>
+                    <p className="text-xs text-gray-500 truncate mb-3" title={props.link}>
                         🔗 {props.link}
                     </p>
+                    
+                    {props.tags && props.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {props.tags.map((tag) => (
+                                <span
+                                    key={tag._id}
+                                    className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors duration-200"
+                                    title={`Tag: ${tag.title}`}
+                                >
+                                    <svg className="w-3 h-3 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
+                                    </svg>
+                                    <span className="truncate max-w-16">{tag.title}</span>
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
