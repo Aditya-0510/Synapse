@@ -211,7 +211,7 @@ export function Card( props: CardProps){
     return(
         <>
         <div className={props.className}>
-            <div className="bg-white rounded-xl shadow-lg border border-slate-300 p-6 max-w-sm min-h-64 hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-xl shadow-lg border border-slate-300 p-6 w-full min-h-64 hover:shadow-xl transition-shadow duration-300">
                  {error && (
                         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                             <div className="flex items-center">
@@ -299,11 +299,12 @@ export function Card( props: CardProps){
                                 </div>
                             )}
                             
-                            <div className={twitterLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'}>
-                                <blockquote className='twitter-tweet'>
-                                    <a href={props.link.replace("x","twitter")} title='tweet embed'></a>
+                           <div className={`relative w-full overflow-hidden rounded-lg border ${twitterLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'}`}>
+                                <blockquote className="twitter-tweet" data-dnt="true" data-width="100%">
+                                    <a href={props.link.replace("x", "twitter")} title="tweet embed"></a>
                                 </blockquote>
                             </div>
+
                         </div>
                     )}
 

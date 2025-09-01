@@ -15,3 +15,12 @@
   --color-gray-600: #95989c;
 
 }
+
+.twitter-tweet {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+.twitter-tweet iframe {
+  max-width: 100% !important;
+  width: 100% !important;
+}
