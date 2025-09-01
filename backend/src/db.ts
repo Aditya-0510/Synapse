@@ -1,7 +1,9 @@
 import mongoose, { Schema, model } from "mongoose"
 const { ObjectId } = mongoose.Types;
+import dotenv from "dotenv"
 
-await mongoose.connect("mongodb+srv://saiaditya6558:HHTErG6Fsip79ERV@cluster0.mrolibp.mongodb.net/second-brain");
+dotenv.config();
+await mongoose.connect(process.env.MONGODB_URI!);
 
 const userSchema = new Schema({
     name: {type: String, required:true},

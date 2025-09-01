@@ -3,11 +3,23 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../db.js";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import z from "zod";
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "ddd";
 const userRouter = Router();
 userRouter.post("/signup", async (req, res) => {
     const { name, email, password } = req.body;
+    const requiredBody = z.object({
+        email: z.string().email(),
+        password: z.string().min(5),
+        name: z.string().min(3).max(100)
+    });
+    const parsedData = requiredBody.safeParse(req.body);
+    if (!parsedData.success) {
+        return res.status(400).json({
+            message: "Incorrect format"
+        });
+    }
     console.log(email);
     try {
         const existingUser = await UserModel.findOne({
